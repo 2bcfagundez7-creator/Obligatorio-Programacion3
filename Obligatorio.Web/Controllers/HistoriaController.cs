@@ -41,7 +41,7 @@ namespace Obligatorio.Web.Controllers
             public IActionResult Crear(
                 string titulo,
                 string sinopsis,
-                int categoriaId,
+                List<int> categoriasIds,
                 string tituloCapitulo,
                 string textoCapitulo)
             {
@@ -65,11 +65,9 @@ namespace Obligatorio.Web.Controllers
             }
 
             // Buscar la categoría seleccionada
-            var categoria = _repoCategorias.BuscarPorId(categoriaId);
-
-            if (categoria == null)
+            if (categoriasIds == null || categoriasIds.Count == 0)
             {
-                ViewBag.Error = "La categoría seleccionada no existe";
+                ViewBag.Error = "Debe seleccionar al menos una categoría";
                 ViewBag.Categorias = _repoCategorias.Listar();
 
                 return View();
@@ -88,7 +86,15 @@ namespace Obligatorio.Web.Controllers
             historia.Sinopsis = sinopsis;
             historia.Estado = EstadoHistoria.BORRADOR;
 
-            historia.Categorias.Add(categoria);
+            foreach (int categoriaId in categoriasIds)
+            {
+                Categoria? categoria = _repoCategorias.BuscarPorId(categoriaId);
+
+                if (categoria != null)
+                {
+                    historia.Categorias.Add(categoria);
+                }
+            }
 
             // Primero guardamos la historia
             _repoHistorias.Agregar(historia);
@@ -123,7 +129,11 @@ namespace Obligatorio.Web.Controllers
             int id,
             string titulo,
             string sinopsis,
-            string estado)
+            string estado,
+            List<int> categoriasIds,
+            // Titulo capitulo, puede ser nulo, por eso el signo de interrogación
+            string? tituloCapitulo,
+            string? textoCapitulo)
         {
             int? usuarioId = HttpContext.Session.GetInt32("UsuarioId");
 
@@ -149,6 +159,22 @@ namespace Obligatorio.Web.Controllers
             historia.Titulo = titulo;
             historia.Sinopsis = sinopsis;
 
+            // Si la historia tiene un solo capítulo y es el capítulo inicial, actualizamos su título y texto
+            if (historia.Capitulos.Count == 1 && historia.CapituloInicial != null)
+            {
+                historia.CapituloInicial.Titulo = tituloCapitulo ?? "";
+                historia.CapituloInicial.Texto = textoCapitulo ?? "";
+            }
+
+            // Validamos que se haya seleccionado al menos una categoría
+            if (categoriasIds == null || categoriasIds.Count == 0)
+            {
+                ViewBag.Error = "Debe seleccionar al menos una categoría";
+                ViewBag.Categorias = _repoCategorias.Listar();
+
+                return View(historia);
+            }
+
             if (estado == "PUBLICADA")
             {
                 if (!historia.ValidarEstructura())
@@ -163,9 +189,12 @@ namespace Obligatorio.Web.Controllers
             {
                 historia.Estado = EstadoHistoria.BORRADOR;
             }
-
+            // Actualizamos las categorías de la historia
+            _repoHistorias.ActualizarCategorias(historia, categoriasIds);
+            // Guardamos los cambios en la historia
             _repoHistorias.Modificar();
 
+            // Redirigimos al índice de historias
             return RedirectToAction("Index");
         }
         public IActionResult Eliminar(int id)
@@ -183,16 +212,31 @@ namespace Obligatorio.Web.Controllers
             {
                 return RedirectToAction("Index");
             }
-
+            ViewBag.Categorias = _repoCategorias.Listar();
             return View(historia);
         }
         [HttpPost]
         public IActionResult ConfirmarEliminar(int id)
         {
+            // Verificamos si el usuario está logueado
+            int? usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+
+            if (usuarioId == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
+            // Buscamos la historia por su id
             Historia? historia = _repoHistorias.BuscarPorId(id);
 
             if (historia == null)
             {
+                return RedirectToAction("Index");
+            }
+            // Verificamos si la historia tiene lecturas asociadas
+            if (_repoHistorias.TieneLecturas(id))
+            {
+                TempData["Error"] = "No se puede eliminar la historia porque tiene lecturas asociadas";
+
                 return RedirectToAction("Index");
             }
 

@@ -43,7 +43,9 @@ namespace Obligatorio.LogicaAccesoDatos.Repositorios
         }
         public void Agregar(Usuario usuario)
         {
+            // Agregar el usuario a la base de datos
             _context.Usuarios.Add(usuario);
+            // Guardar los cambios en la base de datoss
             _context.SaveChanges();
         }
     }

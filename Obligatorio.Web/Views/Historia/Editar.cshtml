@@ -24,7 +24,39 @@
         <label>Sinopsis</label>
         <textarea name="sinopsis">@Model.Sinopsis</textarea>
     </div>
+    <div>
+        <label>Categorías</label>
 
+        @foreach (var categoria in ViewBag.Categorias)
+        {
+            bool seleccionada = Model.Categorias.Any(c => c.Id == categoria.Id);
+
+            <div>
+                <input type="checkbox"
+                       name="categoriasIds"
+                       value="@categoria.Id"
+                       checked="@seleccionada" />
+
+                <label>@categoria.Nombre</label>
+            </div>
+        }       
+        @if (Model.Capitulos.Count == 1 && Model.CapituloInicial != null)
+        {
+            <h3>Capítulo inicial</h3>
+
+            <div>
+                <label>Título del capítulo inicial</label>
+                <input type="text"
+                       name="tituloCapitulo"
+                       value="@Model.CapituloInicial.Titulo" />
+            </div>
+
+            <div>
+                <label>Texto del capítulo inicial</label>
+                <textarea name="textoCapitulo">@Model.CapituloInicial.Texto</textarea>
+            </div>
+        }
+    </div>
     <div>
         <label>Estado</label>
 

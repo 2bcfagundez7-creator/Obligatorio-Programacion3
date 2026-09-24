@@ -22,15 +22,18 @@
     </div>
 
     <div>
-        <label>Categoría</label>
+        <label>Categorías</label>
 
-        <select name="categoriaId">            
-            @foreach (var categoria in ViewBag.Categorias)
-            {
-                <option value="@categoria.Id">
-                    @categoria.Nombre
-                </option>
-            }
+        @foreach (var categoria in ViewBag.Categorias)
+        {
+            <div>
+                <input type="checkbox"
+                       name="categoriasIds"
+                       value="@categoria.Id" />
+
+                <label>@categoria.Nombre</label>
+            </div>
+        }
         </select>
     </div>
 

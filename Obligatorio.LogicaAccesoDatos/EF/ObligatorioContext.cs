@@ -14,6 +14,7 @@ namespace Obligatorio.LogicaAccesoDatos.EF
         public DbSet<CapituloIntermedio> CapitulosIntermedios { get; set; }
         public DbSet<CapituloFinal> CapitulosFinales { get; set; }
         public DbSet<Opcion> Opciones { get; set; }
+        public DbSet<Lectura> Lecturas { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

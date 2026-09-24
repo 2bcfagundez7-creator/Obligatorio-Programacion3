@@ -14,7 +14,11 @@ namespace Obligatorio.LogicaAccesoDatos.Repositorios
         }
         public Historia? BuscarPorId(int id)
         {
-            foreach (Historia historia in _context.Historias)
+            // Cargamos las historias con sus categorías, capítulos y capítulo inicial
+            foreach (Historia historia in _context.Historias
+                .Include(h => h.Categorias)
+                .Include(h => h.Capitulos)
+                .Include(h => h.CapituloInicial))
             {
                 if (historia.Id == id)
                 {
@@ -23,6 +27,32 @@ namespace Obligatorio.LogicaAccesoDatos.Repositorios
             }
 
             return null;
+        }
+        public void ActualizarCategorias(Historia historia, List<int> categoriasIds)
+        {
+            // Primero cargamos las categorías actuales de la historia
+            _context.Entry(historia)
+                .Collection(h => h.Categorias)
+                .Load();
+
+            // Eliminamos las relaciones actuales
+            historia.Categorias.Clear();
+            _context.SaveChanges();
+
+            // Agregamos las nuevas categorías seleccionadas
+            foreach (int categoriaId in categoriasIds)
+            {
+                foreach (Categoria categoria in _context.Categorias)
+                {
+                    if (categoria.Id == categoriaId)
+                    {
+                        historia.Categorias.Add(categoria);
+                        break;
+                    }
+                }
+            }
+
+            _context.SaveChanges();
         }
         public void Modificar()
         {
@@ -87,6 +117,18 @@ namespace Obligatorio.LogicaAccesoDatos.Repositorios
             }
 
             return historia;
+        }
+        public bool TieneLecturas(int historiaId)
+        {
+            foreach (Lectura lectura in _context.Lecturas)
+            {
+                if (lectura.HistoriaId == historiaId)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
     }

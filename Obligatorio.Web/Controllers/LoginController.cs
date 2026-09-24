@@ -15,6 +15,7 @@ namespace Obligatorio.Web.Controllers
         [HttpPost]
         public IActionResult Login(string username, string password)
         {
+            
             var admin = _repoUsuarios.LoginAdministrador(username, password);
 
             if (admin != null)
