@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Crear usuario";
+}
+
+<h2>Crear usuario</h2>
+
+@if (ViewBag.Error != null)
+{
+    <p>@ViewBag.Error</p>
+}
+
+@if (ViewBag.Mensaje != null)
+{
+    <p>@ViewBag.Mensaje</p>
+}
+
+<form method="post" asp-controller="Usuario" asp-action="Crear">
+
+    <div>
+        <label>Nombre completo</label>
+        <input type="text" name="nombreCompleto" />
+    </div>
+
+    <div>
+        <label>Email</label>
+        <input type="email" name="email" />
+    </div>
+
+    <div>
+        <label>Nombre de usuario</label>
+        <input type="text" name="username" />
+    </div>
+
+    <div>
+        <label>Contraseña</label>
+        <input type="password" name="password" />
+    </div>
+
+    <div>
+        <label>Rol</label>
+
+        <select name="rol">
+            <option value="Administrador">Administrador</option>
+            <option value="Usuario">Usuario</option>
+        </select>
+    </div>
+
+    <br />
+
+    <button type="submit">Crear usuario</button>
+
+</form>

@@ -1,0 +1,42 @@
+﻿@model List<Obligatorio.LogicaNegocio.Entidades.Historia>
+
+@{
+    ViewData["Title"] = "Historias";
+}
+
+<h2>Historias</h2>
+
+@if (Model.Count == 0)
+{
+    <p>No hay historias registradas.</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Título</th>
+                <th>Sinopsis</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var historia in Model)
+            {
+                <tr>
+                    <td>@historia.Id</td>
+                    <td>@historia.Titulo</td>
+                    <td>@historia.Sinopsis</td>
+                    <td>@historia.Estado</td>
+                    <td>
+                        <a asp-controller="Historia" asp-action="Editar" asp-route-id="@historia.Id">Editar</a>
+                        <a asp-controller="Historia" asp-action="Editar" asp-route-id="@historia.Id">Editar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Crear historia";
+}
+
+<h2>Crear historia</h2>
+
+@if (ViewBag.Error != null)
+{
+    <p>@ViewBag.Error</p>
+}
+
+<form method="post" asp-controller="Historia" asp-action="Crear">
+
+    <div>
+        <label>Título</label>
+        <input type="text" name="titulo" />
+    </div>
+
+    <div>
+        <label>Sinopsis</label>
+        <textarea name="sinopsis"></textarea>
+    </div>
+
+    <div>
+        <label>Categoría</label>
+
+        <select name="categoriaId">            
+            @foreach (var categoria in ViewBag.Categorias)
+            {
+                <option value="@categoria.Id">
+                    @categoria.Nombre
+                </option>
+            }
+        </select>
+    </div>
+
+    <h3>Capítulo inicial</h3>
+
+    <div>
+        <label>Título del capítulo</label>
+        <input type="text" name="tituloCapitulo" />
+    </div>
+
+    <div>
+        <label>Texto del capítulo</label>
+        <textarea name="textoCapitulo"></textarea>
+    </div>
+
+    <br />
+
+    <button type="submit">Crear historia</button>
+
+</form>

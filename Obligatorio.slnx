@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Obligatorio.LogicaAccesoDatos/Obligatorio.LogicaAccesoDatos.csproj" Id="58a4f040-db65-4edf-9d85-1f6f0bade4eb" />
+  <Project Path="Obligatorio.Web/Obligatorio.Web.csproj" Id="0fe30574-1e70-43af-a27c-07ec29d9c73d" />
+  <Project Path="Obligatorio/Obligatorio.LogicaNegocio.csproj" />
+</Solution>

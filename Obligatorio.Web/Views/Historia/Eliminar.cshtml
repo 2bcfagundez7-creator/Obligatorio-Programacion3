@@ -1,0 +1,23 @@
+﻿@model Obligatorio.LogicaNegocio.Entidades.Historia
+
+<h2>Eliminar historia</h2>
+
+<p>
+    ¿Está seguro que desea eliminar la historia
+    <strong>@Model.Titulo</strong>?
+</p>
+
+<form method="post"
+      asp-controller="Historia"
+      asp-action="ConfirmarEliminar">
+
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <button type="submit">Eliminar</button>
+
+    <a asp-controller="Historia"
+       asp-action="Index">
+        Cancelar
+    </a>
+
+</form>
