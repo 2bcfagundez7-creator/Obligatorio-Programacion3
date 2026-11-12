@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Obligatorio.LogicaAccesoDatos.Repositorios;
 using Obligatorio.LogicaNegocio.Entidades;
 
@@ -38,6 +38,7 @@ namespace Obligatorio.Web.Controllers
             return View();
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
             public IActionResult Crear(
                 string titulo,
                 string sinopsis,
@@ -95,15 +96,18 @@ namespace Obligatorio.Web.Controllers
                     historia.Categorias.Add(categoria);
                 }
             }
-
-            // Primero guardamos la historia
-            _repoHistorias.Agregar(historia);
-
-            // Después guardamos y asociamos el capítulo inicial
-            _repoHistorias.AgregarCapituloInicial(historia, capituloInicial);
-
-            return RedirectToAction("Index");
-        }
+            try
+            {
+                _repoHistorias.AgregarConAuditoria(historia, capituloInicial, usuarioId.Value);
+                return RedirectToAction("Index");
+            }
+            catch (Exception e)
+            {
+                ViewBag.Error = e.Message;
+                ViewBag.Categorias = _repoCategorias.Listar();
+                return View();
+            }
+            }
         public IActionResult Editar(int id)
         {
             int? usuarioId = HttpContext.Session.GetInt32("UsuarioId");
@@ -125,6 +129,7 @@ namespace Obligatorio.Web.Controllers
             return View(historia);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Editar(
             int id,
             string titulo,
@@ -153,8 +158,11 @@ namespace Obligatorio.Web.Controllers
                 string.IsNullOrEmpty(sinopsis))
             {
                 ViewBag.Error = "Todos los datos son obligatorios";
+                ViewBag.Categorias = _repoCategorias.Listar();
                 return View(historia);
             }
+
+            EstadoHistoria estadoAnterior = historia.Estado;
 
             historia.Titulo = titulo;
             historia.Sinopsis = sinopsis;
@@ -180,6 +188,7 @@ namespace Obligatorio.Web.Controllers
                 if (!historia.ValidarEstructura())
                 {
                     ViewBag.Error = "La historia no tiene una estructura válida para ser publicada";
+                    ViewBag.Categorias = _repoCategorias.Listar();
                     return View(historia);
                 }
 
@@ -189,13 +198,25 @@ namespace Obligatorio.Web.Controllers
             {
                 historia.Estado = EstadoHistoria.BORRADOR;
             }
-            // Actualizamos las categorías de la historia
-            _repoHistorias.ActualizarCategorias(historia, categoriasIds);
-            // Guardamos los cambios en la historia
-            _repoHistorias.Modificar();
+            string accion = "Editar historia";
+            if (estadoAnterior == EstadoHistoria.BORRADOR &&
+                historia.Estado == EstadoHistoria.PUBLICADA)
+            {
+                accion = "Publicar historia";
+            }
 
-            // Redirigimos al índice de historias
-            return RedirectToAction("Index");
+            try
+            {
+                _repoHistorias.ModificarConAuditoria(historia, categoriasIds,
+                    usuarioId.Value, accion);
+                return RedirectToAction("Index");
+            }
+            catch (Exception e)
+            {
+                ViewBag.Error = e.Message;
+                ViewBag.Categorias = _repoCategorias.Listar();
+                return View(historia);
+            }
         }
         public IActionResult Eliminar(int id)
         {
@@ -216,6 +237,7 @@ namespace Obligatorio.Web.Controllers
             return View(historia);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult ConfirmarEliminar(int id)
         {
             // Verificamos si el usuario está logueado
@@ -240,8 +262,15 @@ namespace Obligatorio.Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            _repoHistorias.Eliminar(historia);
-
+            try
+            {
+                _repoHistorias.Eliminar(historia);
+                TempData["Mensaje"] = "Historia eliminada correctamente";
+            }
+            catch (Exception e)
+            {
+                TempData["Error"] = e.Message;
+            }
             return RedirectToAction("Index");
         }
     }

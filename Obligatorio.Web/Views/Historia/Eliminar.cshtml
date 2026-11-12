@@ -1,4 +1,4 @@
-﻿@model Obligatorio.LogicaNegocio.Entidades.Historia
+@model Obligatorio.LogicaNegocio.Entidades.Historia
 
 <h2>Eliminar historia</h2>
 
@@ -7,7 +7,7 @@
     <strong>@Model.Titulo</strong>?
 </p>
 
-<form method="post"
+<form method="post" asp-antiforgery="true"
       asp-controller="Historia"
       asp-action="ConfirmarEliminar">
 

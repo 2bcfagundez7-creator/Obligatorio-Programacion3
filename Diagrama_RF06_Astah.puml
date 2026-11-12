@@ -1,0 +1,279 @@
+@startuml Diagrama_RF06
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+hide empty members
+
+package "Lógica de negocio" as LN {
+  interface IValidable {
+	+Validar() : void
+  }
+
+  class Usuario {
+	+Id : int
+	+NombreCompleto : string
+	+Email : string
+	+Username : string
+	-Password : string
+	+SetPassword(password : string) : void
+	+Validar() : void
+	+ProtegerPassword() : void
+	+VerificarPassword(passwordIngresada : string) : bool
+	+ValidarPassword() : bool
+  }
+
+  class Lector
+
+  class Administrador {
+	+ValidarEstructura(historia : Historia) : bool
+	+PublicarHistoria(historia : Historia) : bool
+  }
+
+  class Historia {
+	+Id : int
+	+Titulo : string
+	+Sinopsis : string
+	+Categorias : List<Categoria>
+	+Estado : EstadoHistoria
+	+CapituloInicial : Capitulo
+	+Capitulos : List<Capitulo>
+	+Validar() : void
+	+ValidarEstructura() : bool
+  }
+
+  class Categoria {
+	+Id : int
+	+Nombre : string
+	+Historias : List<Historia>
+	+Validar() : void
+  }
+
+  abstract class Capitulo {
+	+Id : int
+	+Titulo : string
+	+Texto : string
+	+EsFinal : bool
+	+Validar() : void
+  }
+
+  class CapituloIntermedio {
+	+Opciones : List<Opcion>
+	+EsFinal : bool
+	+AgregarOpcion(opcion : Opcion) : void
+	+TieneOpciones : bool
+  }
+
+  class CapituloFinal {
+	+VecesAlcanzado : int
+	+EsFinal : bool
+	+IncrementarCuenta() : void
+  }
+
+  class Opcion {
+	+Id : int
+	+Texto : string
+	+CapituloDestino : Capitulo
+	+Validar() : void
+  }
+
+  class Lectura {
+	+Id : int
+	+UsuarioId : int
+	+Usuario : Usuario
+	+HistoriaId : int
+	+Historia : Historia
+	+FechaInicio : DateTime
+	+FechaFinalizacion : DateTime?
+	+FinalAlcanzado : CapituloFinal
+	+CapituloActualId : int?
+	+Validar() : void
+  }
+
+  class Auditoria {
+	+Id : int
+	+Accion : string
+	+Fecha : DateTime
+	+AdministradorId : int
+	+Administrador : Administrador
+	+HistoriaId : int?
+	+Historia : Historia
+	+Validar() : void
+  }
+
+  enum EstadoHistoria {
+	BORRADOR
+	PUBLICADA
+  }
+
+  class ReglaNegocioException
+  class RecursoNoEncontradoException
+  class AccesoDenegadoException
+}
+
+package "Acceso a datos - RF06" as AD {
+  class ObligatorioContext {
+	+Usuarios : DbSet<Usuario>
+	+Lectores : DbSet<Lector>
+	+Categorias : DbSet<Categoria>
+	+Historias : DbSet<Historia>
+	+Capitulos : DbSet<Capitulo>
+	+CapitulosIntermedios : DbSet<CapituloIntermedio>
+	+CapitulosFinales : DbSet<CapituloFinal>
+	+Opciones : DbSet<Opcion>
+	+Lecturas : DbSet<Lectura>
+	+OnConfiguring() : void
+	+OnModelCreating() : void
+  }
+
+  class RepositorioHistorias {
+	-_context : ObligatorioContext
+	+ListarPublicadas(categoriaId : int?) : List<Historia>
+	+BuscarPorId(id : int) : Historia
+  }
+
+  class RepositorioCategorias {
+	-_context : ObligatorioContext
+	+Listar() : List<Categoria>
+  }
+
+  class RepositorioLecturas {
+	-_context : ObligatorioContext
+	+Agregar(lectura : Lectura) : void
+	+ElegirOpcion(lecturaId : int, usuarioId : int, opcionId : int) : Capitulo
+	+ObtenerCapituloActual(lecturaId : int, usuarioId : int) : Capitulo
+  }
+}
+
+package "API - RF06" as API {
+  class HistoriasApiController {
+	-_repoHistorias : RepositorioHistorias
+	-_repoCategorias : RepositorioCategorias
+	+ObtenerHistorias(categoriaId : int?) : IActionResult
+	+ObtenerCategorias() : IActionResult
+  }
+
+  class LecturasApiController {
+	+IniciarLectura(historiaId : int) : IActionResult
+	+ElegirOpcion(lecturaId : int, opcionId : int) : IActionResult
+	+ObtenerCapituloActual(lecturaId : int) : IActionResult
+  }
+}
+
+package "Web de lectores - RF06" as WEB {
+  class ServicioApi {
+	-_cliente : HttpClient
+	+GetAsync<T>(ruta : string, token : string) : ResultadoApi<T>
+	+PostAsync<T>(ruta : string, token : string, datos : object) : ResultadoApi<T>
+	-EnviarAsync<T>(metodo : HttpMethod, ruta : string, token : string, datos : object) : ResultadoApi<T>
+  }
+
+  class ResultadoApi<T> {
+	+Correcto : bool
+	+Datos : T
+	+Error : string
+	+Codigo : HttpStatusCode
+  }
+
+  class HistoriasWebController {
+	-_api : ServicioApi
+	+Index(categoriaId : int?) : IActionResult
+  }
+
+  class LecturasWebController {
+	-_api : ServicioApi
+	+Iniciar(historiaId : int) : IActionResult
+	+Leer(lecturaId : int) : IActionResult
+	+Elegir(lecturaId : int, opcionId : int) : IActionResult
+  }
+
+  class CategoriaDTO {
+	+Id : int
+	+Nombre : string
+  }
+
+  class HistoriaPublicadaDTO {
+	+Id : int
+	+Titulo : string
+	+Sinopsis : string
+	+Categorias : List<string>
+  }
+
+  class LecturaIniciadaDTO {
+	+LecturaId : int
+	+HistoriaId : int
+	+TituloHistoria : string
+  }
+
+  class OpcionDTO {
+	+Id : int
+	+Texto : string
+  }
+
+  class CapituloActualDTO {
+	+CapituloId : int
+	+Titulo : string
+	+Texto : string
+	+EsFinal : bool
+	+Opciones : List<OpcionDTO>
+  }
+}
+
+' Relaciones de la lógica de negocio
+IValidable <|.. Usuario
+IValidable <|.. Historia
+IValidable <|.. Categoria
+IValidable <|.. Capitulo
+IValidable <|.. Opcion
+IValidable <|.. Lectura
+IValidable <|.. Auditoria
+
+Usuario <|-- Lector
+Usuario <|-- Administrador
+Capitulo <|-- CapituloIntermedio
+Capitulo <|-- CapituloFinal
+
+Historia "1" o-- "1..*" Categoria : categorias
+Historia "1" *-- "1..*" Capitulo : capitulos
+Historia "1" --> "1" Capitulo : capítulo inicial
+Historia --> EstadoHistoria
+CapituloIntermedio "1" *-- "1..*" Opcion : opciones
+Opcion --> Capitulo : capítulo destino
+Lectura --> Usuario : lector
+Lectura --> Historia : historia
+Lectura --> Capitulo : capítulo actual
+Lectura --> CapituloFinal : final alcanzado
+Auditoria --> Administrador
+Auditoria --> Historia
+
+' Relaciones de acceso a datos
+RepositorioHistorias --> ObligatorioContext
+RepositorioHistorias --> Historia
+RepositorioCategorias --> ObligatorioContext
+RepositorioCategorias --> Categoria
+RepositorioLecturas --> ObligatorioContext
+RepositorioLecturas --> Lectura
+RepositorioLecturas --> Capitulo
+RepositorioLecturas ..> ReglaNegocioException
+RepositorioLecturas ..> RecursoNoEncontradoException
+RepositorioLecturas ..> AccesoDenegadoException
+
+' Relaciones de la API
+HistoriasApiController --> RepositorioHistorias
+HistoriasApiController --> RepositorioCategorias
+LecturasApiController --> RepositorioHistorias
+LecturasApiController --> RepositorioLecturas
+LecturasApiController --> Historia
+LecturasApiController --> Lectura
+LecturasApiController --> Capitulo
+LecturasApiController --> Opcion
+
+' Relaciones de la aplicación web
+HistoriasWebController --> ServicioApi
+LecturasWebController --> ServicioApi
+ServicioApi --> ResultadoApi
+HistoriasWebController --> CategoriaDTO
+HistoriasWebController --> HistoriaPublicadaDTO
+LecturasWebController --> LecturaIniciadaDTO
+LecturasWebController --> CapituloActualDTO
+CapituloActualDTO *-- OpcionDTO : opciones
+
+@enduml

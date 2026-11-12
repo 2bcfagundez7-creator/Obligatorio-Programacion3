@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Obligatorio.LogicaNegocio.Entidades;
 
 namespace Obligatorio.LogicaAccesoDatos.EF
@@ -16,11 +16,24 @@ namespace Obligatorio.LogicaAccesoDatos.EF
         public DbSet<Opcion> Opciones { get; set; }
         public DbSet<Lectura> Lecturas { get; set; }
 
+        public DbSet<Auditoria> Auditorias { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(
-                @"Server=(localdb)\MSSQLLocalDB;Database=ObligatorioP3;Trusted_Connection=True;TrustServerCertificate=True;"
-            );
+            // En desarrollo usamos LocalDB. En SOMEE se configura ConnectionStrings__Obligatorio.
+            string cadena = Environment.GetEnvironmentVariable("ConnectionStrings__Obligatorio")
+                ?? @"Server=(localdb)\MSSQLLocalDB;Database=ObligatorioP3;Trusted_Connection=True;TrustServerCertificate=True;";
+            optionsBuilder.UseSqlServer(cadena);
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Auditoria>()
+                .HasOne(a => a.Historia)
+                .WithMany()
+                .HasForeignKey(a => a.HistoriaId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

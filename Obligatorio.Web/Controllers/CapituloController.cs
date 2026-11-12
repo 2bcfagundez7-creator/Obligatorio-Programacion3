@@ -1,4 +1,4 @@
-﻿
+
 using Microsoft.AspNetCore.Mvc;
 using Obligatorio.LogicaAccesoDatos.Repositorios;
 using Obligatorio.LogicaNegocio.Entidades;
@@ -36,6 +36,7 @@ namespace Obligatorio.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Crear(
             int historiaId,
             int capituloAnteriorId,
@@ -86,7 +87,8 @@ namespace Obligatorio.Web.Controllers
                     historiaId,
                     capituloAnteriorId,
                     nuevoCapitulo,
-                    textoOpcion
+                    textoOpcion,
+                    usuarioId.Value
                 );
 
                 return RedirectToAction("Index", "Historia");
@@ -107,6 +109,55 @@ namespace Obligatorio.Web.Controllers
             ViewBag.HistoriaId = historiaId;
         }
 
+
+        // RF04 - Mostramos los capítulos de una historia para poder editarlos
+        public IActionResult Listar(int historiaId)
+        {
+            int? usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+            if (usuarioId == null) return RedirectToAction("Login", "Login");
+
+            Historia? historia = _repoHistorias.BuscarPorId(historiaId);
+            if (historia == null) return RedirectToAction("Index", "Historia");
+
+            return View(historia);
+        }
+
+        [HttpGet]
+        public IActionResult Editar(int historiaId, int capituloId)
+        {
+            int? usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+            if (usuarioId == null) return RedirectToAction("Login", "Login");
+
+            Capitulo? capitulo = _repoCapitulos.BuscarPorHistoria(capituloId, historiaId);
+            if (capitulo == null) return RedirectToAction("Listar", new { historiaId });
+
+            ViewBag.HistoriaId = historiaId;
+            return View(capitulo);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Editar(int historiaId, int capituloId, string titulo, string texto)
+        {
+            int? usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+            if (usuarioId == null) return RedirectToAction("Login", "Login");
+
+            try
+            {
+                _repoCapitulos.EditarConAuditoria(
+                    historiaId, capituloId, titulo, texto, usuarioId.Value);
+
+                return RedirectToAction("Listar", new { historiaId });
+            }
+            catch (Exception e)
+            {
+                Capitulo? capitulo = _repoCapitulos.BuscarPorHistoria(capituloId, historiaId);
+                if (capitulo == null) return RedirectToAction("Index", "Historia");
+                ViewBag.Error = e.Message;
+                ViewBag.HistoriaId = historiaId;
+                return View(capitulo);
+            }
+        }
 
     }
 }

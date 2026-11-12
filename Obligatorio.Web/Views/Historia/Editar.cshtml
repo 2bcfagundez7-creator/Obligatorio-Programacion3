@@ -1,4 +1,4 @@
-﻿@model Obligatorio.LogicaNegocio.Entidades.Historia
+@model Obligatorio.LogicaNegocio.Entidades.Historia
 
 @{
     ViewData["Title"] = "Editar historia";
@@ -11,7 +11,7 @@
     <p>@ViewBag.Error</p>
 }
 
-<form method="post" asp-controller="Historia" asp-action="Editar">
+<form method="post" asp-antiforgery="true" asp-controller="Historia" asp-action="Editar">
 
     <input type="hidden" name="id" value="@Model.Id" />
 

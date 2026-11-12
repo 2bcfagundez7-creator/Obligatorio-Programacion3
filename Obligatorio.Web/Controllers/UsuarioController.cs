@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Obligatorio.LogicaAccesoDatos.Repositorios;
 using Obligatorio.LogicaNegocio.Entidades;
 
@@ -21,6 +21,7 @@ namespace Obligatorio.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Crear(
             string nombreCompleto,
             string email,
@@ -28,6 +29,9 @@ namespace Obligatorio.Web.Controllers
             string password,
             string rol)
         {
+            if (HttpContext.Session.GetInt32("UsuarioId") == null)
+                return RedirectToAction("Login", "Login");
+
             // Validamos que no haya campos vacíos
             if (string.IsNullOrEmpty(nombreCompleto) ||
                 string.IsNullOrEmpty(email) ||
@@ -59,9 +63,14 @@ namespace Obligatorio.Web.Controllers
             {
                 nuevoUsuario = new Administrador();
             }
-            else
+            else if (rol == "Lector" || rol == "Usuario")
             {
                 nuevoUsuario = new Lector();
+            }
+            else
+            {
+                ViewBag.Error = "El rol seleccionado no es válido";
+                return View();
             }
 
             nuevoUsuario.NombreCompleto = nombreCompleto;
@@ -75,7 +84,15 @@ namespace Obligatorio.Web.Controllers
                 return View();
             }
 
-            _repoUsuarios.Agregar(nuevoUsuario);
+            try
+            {
+                _repoUsuarios.Agregar(nuevoUsuario);
+            }
+            catch (Exception e)
+            {
+                ViewBag.Error = e.Message;
+                return View();
+            }
 
             ViewBag.Mensaje = "Usuario creado correctamente";
             return View();

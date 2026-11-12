@@ -1,0 +1,51 @@
+@model Obligatorio.WebLectores.Models.CapituloActualDTO
+@{
+    ViewData["Title"] = Model.Titulo;
+    int lecturaId = (int)ViewBag.LecturaId;
+}
+<div class="reading-shell mx-auto">
+    <div class="mb-3">
+        <a asp-controller="Historial" asp-action="Index" class="link-secondary">Mis lecturas</a>
+        <span class="text-body-secondary"> / Lectura #@lecturaId</span>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <article class="card shadow-sm p-4 p-md-5">
+        <div class="text-body-secondary small mb-2">Capítulo #@Model.CapituloId</div>
+        <h1 class="mb-4">@Model.Titulo</h1>
+        <div class="chapter-text">@Model.Texto</div>
+
+        <hr class="my-4" />
+
+        @if (Model.EsFinal)
+        {
+            <div class="alert alert-success mb-3">
+                <h2 class="h5">¡Llegaste al final!</h2>
+                <p class="mb-0">Esta lectura terminó. Podés comenzar otra aventura.</p>
+            </div>
+            <a asp-controller="Historias" asp-action="Index" class="btn btn-primary">Volver a las historias</a>
+        }
+        else if (Model.Opciones.Count == 0)
+        {
+            <p class="text-body-secondary mb-0">Este capítulo todavía no tiene opciones disponibles.</p>
+        }
+        else
+        {
+            <h2 class="h5 mb-3">¿Qué querés hacer?</h2>
+            <div class="d-grid gap-2">
+                @foreach (var opcion in Model.Opciones)
+                {
+                    <form method="post" asp-controller="Lecturas" asp-action="Elegir" asp-antiforgery="true">
+                        <input type="hidden" name="lecturaId" value="@lecturaId" />
+                        <input type="hidden" name="opcionId" value="@opcion.Id" />
+                        <button type="submit" class="btn btn-outline-primary w-100 text-start option-button">@opcion.Texto</button>
+                    </form>
+                }
+            </div>
+        }
+    </article>
+</div>

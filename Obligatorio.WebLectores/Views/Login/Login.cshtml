@@ -1,0 +1,27 @@
+@model Obligatorio.WebLectores.Models.LoginLectorDTO
+@{
+    ViewData["Title"] = "Ingresar";
+}
+<div class="mx-auto login-panel">
+    <div class="card shadow-sm p-4">
+        <h1 class="h3 mb-2">Ingresar al sistema</h1>
+        <p class="text-body-secondary">Los lectores pueden jugar historias y los administradores pueden consultar métricas.</p>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger" role="alert">@ViewBag.Error</div>
+        }
+
+        <form method="post" asp-controller="Login" asp-action="Login" asp-antiforgery="true">
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label">Usuario</label>
+                <input asp-for="Username" class="form-control" autocomplete="username" required />
+            </div>
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label">Contraseña</label>
+                <input asp-for="Password" type="password" class="form-control" autocomplete="current-password" required />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,64 @@
+﻿@model List<Obligatorio.LogicaNegocio.Entidades.Auditoria>
+@{
+    ViewData["Title"] = "Auditorías";
+}
+<h2>Historial de auditoría</h2>
+<p>Creaciones, modificaciones y publicaciones realizadas por administradores.</p>
+<form method="get" asp-controller="Auditoria" asp-action="Index" class="row g-3 mb-4">
+    <div class="col-md-5">
+        <label class="form-label" for="historiaId">Historia</label>
+        <select class="form-select" name="historiaId" id="historiaId">
+            <option value="">Todas las historias</option>
+            @foreach (var historia in ViewBag.Historias)
+            {
+                if (ViewBag.HistoriaId != null && (int)ViewBag.HistoriaId == historia.Id)
+                {
+                    <option value="@historia.Id" selected>@historia.Titulo (#@historia.Id)</option>
+                }
+                else
+                {
+                    <option value="@historia.Id">@historia.Titulo (#@historia.Id)</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="col-md-5">
+        <label class="form-label" for="administradorId">Administrador</label>
+        <select class="form-select" name="administradorId" id="administradorId">
+            <option value="">Todos los administradores</option>
+            @foreach (var admin in ViewBag.Administradores)
+            {
+                if (ViewBag.AdministradorId != null && (int)ViewBag.AdministradorId == admin.Id)
+                {
+                    <option value="@admin.Id" selected>@admin.Username (#@admin.Id)</option>
+                }
+                else
+                {
+                    <option value="@admin.Id">@admin.Username (#@admin.Id)</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+    </div>
+</form>
+<p><a asp-controller="Auditoria" asp-action="Index">Limpiar filtros</a></p>
+<table class="table table-striped table-bordered">
+    <thead><tr><th>Fecha</th><th>Acción</th><th>Administrador</th><th>Historia</th></tr></thead>
+    <tbody>
+        @foreach (var auditoria in Model)
+        {
+            <tr>
+                <td>@auditoria.Fecha.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                <td>@auditoria.Accion</td>
+                <td>@(auditoria.Administrador?.Username ?? "Id " + auditoria.AdministradorId)</td>
+                <td>@(auditoria.Historia?.Titulo ?? "Historia eliminada") (@(auditoria.HistoriaId?.ToString() ?? "sin referencia"))</td>
+            </tr>
+        }
+    </tbody>
+</table>
+@if (Model.Count == 0)
+{
+    <p>No hay auditorías para los filtros seleccionados.</p>
+}

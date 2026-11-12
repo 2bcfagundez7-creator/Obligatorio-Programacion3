@@ -2,7 +2,9 @@
   <Folder Name="/Elementos de la solución/">
     <File Path="DatosIniciales.sql" />
   </Folder>
+  <Project Path="Obligatorio.Api/Obligatorio.Api.csproj" Id="897f862e-ea26-4ba4-b7a9-2db3e581f5f6" />
   <Project Path="Obligatorio.LogicaAccesoDatos/Obligatorio.LogicaAccesoDatos.csproj" Id="58a4f040-db65-4edf-9d85-1f6f0bade4eb" />
   <Project Path="Obligatorio.Web/Obligatorio.Web.csproj" Id="0fe30574-1e70-43af-a27c-07ec29d9c73d" />
+  <Project Path="Obligatorio.WebLectores/Obligatorio.WebLectores.csproj" Id="4219895e-2296-4783-b2be-30fd0e8d2a44" />
   <Project Path="Obligatorio/Obligatorio.LogicaNegocio.csproj" />
 </Solution>

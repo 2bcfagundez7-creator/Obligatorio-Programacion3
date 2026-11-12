@@ -1,4 +1,4 @@
-﻿@using Obligatorio.LogicaNegocio.Entidades
+@using Obligatorio.LogicaNegocio.Entidades
 
 @{
     ViewData["Title"] = "Crear capítulo";
@@ -37,7 +37,7 @@
 
     <h3>Nuevo capítulo</h3>
 
-    <form method="post" asp-controller="Capitulo" asp-action="Crear">
+    <form method="post" asp-antiforgery="true" asp-controller="Capitulo" asp-action="Crear">
 
         <input type="hidden" name="historiaId"
                value="@ViewBag.HistoriaId" />

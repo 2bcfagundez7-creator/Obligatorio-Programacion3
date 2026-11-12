@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Obligatorio.LogicaAccesoDatos.Repositorios;
 
 namespace Obligatorio.Web.Controllers
@@ -13,6 +13,7 @@ namespace Obligatorio.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Login(string username, string password)
         {
             

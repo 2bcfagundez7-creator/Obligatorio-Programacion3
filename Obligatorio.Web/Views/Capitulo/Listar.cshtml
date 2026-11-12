@@ -1,0 +1,35 @@
+@model Obligatorio.LogicaNegocio.Entidades.Historia
+@{
+    ViewData["Title"] = "Capítulos de " + Model.Titulo;
+}
+
+<h2>Capítulos de @Model.Titulo</h2>
+<p><a asp-controller="Historia" asp-action="Index">Volver a historias</a></p>
+<p><a asp-controller="Capitulo" asp-action="Crear" asp-route-historiaId="@Model.Id">Crear capítulo</a></p>
+
+@if (Model.Capitulos.Count == 0)
+{
+    <p>No hay capítulos registrados.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr><th>Id</th><th>Título</th><th>Tipo</th><th>Acciones</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var capitulo in Model.Capitulos)
+            {
+                <tr>
+                    <td>@capitulo.Id</td>
+                    <td>@capitulo.Titulo</td>
+                    <td>@(capitulo.EsFinal ? "Final" : "Intermedio")</td>
+                    <td>
+                        <a asp-controller="Capitulo" asp-action="Editar"
+                           asp-route-historiaId="@Model.Id" asp-route-capituloId="@capitulo.Id">Editar capítulo</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

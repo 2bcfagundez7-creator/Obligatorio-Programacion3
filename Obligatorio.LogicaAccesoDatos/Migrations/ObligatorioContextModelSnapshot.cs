@@ -54,6 +54,36 @@ namespace Obligatorio.LogicaAccesoDatos.Migrations
                     b.ToTable("CategoriaHistoria");
                 });
 
+            modelBuilder.Entity("Obligatorio.LogicaNegocio.Entidades.Auditoria", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Accion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("AdministradorId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("HistoriaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdministradorId");
+
+                    b.HasIndex("HistoriaId");
+
+                    b.ToTable("Auditorias");
+                });
+
             modelBuilder.Entity("Obligatorio.LogicaNegocio.Entidades.Capitulo", b =>
                 {
                     b.Property<int>("Id")
@@ -125,6 +155,9 @@ namespace Obligatorio.LogicaAccesoDatos.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CapituloActualId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("FechaFinalizacion")
                         .HasColumnType("datetime2");
@@ -261,6 +294,24 @@ namespace Obligatorio.LogicaAccesoDatos.Migrations
                         .HasForeignKey("HistoriasId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Obligatorio.LogicaNegocio.Entidades.Auditoria", b =>
+                {
+                    b.HasOne("Obligatorio.LogicaNegocio.Entidades.Administrador", "Administrador")
+                        .WithMany()
+                        .HasForeignKey("AdministradorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Obligatorio.LogicaNegocio.Entidades.Historia", "Historia")
+                        .WithMany()
+                        .HasForeignKey("HistoriaId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Administrador");
+
+                    b.Navigation("Historia");
                 });
 
             modelBuilder.Entity("Obligatorio.LogicaNegocio.Entidades.Capitulo", b =>

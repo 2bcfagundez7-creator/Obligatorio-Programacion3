@@ -1,4 +1,4 @@
-﻿@model List<Obligatorio.LogicaNegocio.Entidades.Historia>
+@model List<Obligatorio.LogicaNegocio.Entidades.Historia>
 
 @{
     ViewData["Title"] = "Historias";
@@ -37,6 +37,8 @@ else
                     <td>@historia.Sinopsis</td>
                     <td>@historia.Estado</td>
                     <td>
+                        <a asp-controller="Capitulo" asp-action="Crear" asp-route-historiaId="@historia.Id">Crear capítulo</a>
+                        <a asp-controller="Capitulo" asp-action="Listar" asp-route-historiaId="@historia.Id">Ver capítulos</a>
                         <a asp-controller="Historia" asp-action="Editar" asp-route-id="@historia.Id">Editar</a>
                         <a asp-controller="Historia" asp-action="Eliminar" asp-route-id="@historia.Id">Eliminar</a>
                     </td>

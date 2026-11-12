@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Login";
 }
 
@@ -9,7 +9,7 @@
     <p>@ViewBag.Error</p>
 }
 
-<form method="post" asp-controller="Login" asp-action="Login">
+<form method="post" asp-antiforgery="true" asp-controller="Login" asp-action="Login">
 
     <div>
         <label>Usuario</label>

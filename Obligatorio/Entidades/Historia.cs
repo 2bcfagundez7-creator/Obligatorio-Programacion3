@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Obligatorio.LogicaNegocio.Entidades
 {
-    public class Historia
+    public class Historia : IValidable
     {
         public int Id { get; set; }
         public string Titulo { get; set; } = string.Empty;
@@ -12,6 +12,26 @@ namespace Obligatorio.LogicaNegocio.Entidades
         public EstadoHistoria Estado { get; set; } = EstadoHistoria.BORRADOR;
         public Capitulo? CapituloInicial { get; set; }
         public List<Capitulo> Capitulos { get; } = new List<Capitulo>();
+
+        public void Validar()
+        {
+            if (string.IsNullOrWhiteSpace(Titulo) || string.IsNullOrWhiteSpace(Sinopsis))
+            {
+                throw new ReglaNegocioException("El título y la sinopsis son obligatorios");
+            }
+            if (Categorias.Count == 0)
+            {
+                throw new ReglaNegocioException("La historia debe tener al menos una categoría");
+            }
+            if (CapituloInicial == null || CapituloInicial is CapituloFinal)
+            {
+                throw new ReglaNegocioException("La historia necesita un capítulo inicial intermedio");
+            }
+            if (Estado == EstadoHistoria.PUBLICADA && !ValidarEstructura())
+            {
+                throw new ReglaNegocioException("La historia no tiene una estructura válida para publicarse");
+            }
+        }
 
         public bool ValidarEstructura()
         {

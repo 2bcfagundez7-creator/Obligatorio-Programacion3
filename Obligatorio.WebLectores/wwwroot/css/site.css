@@ -1,0 +1,14 @@
+html { font-size: 15px; min-height: 100%; }
+body { min-height: 100vh; display: flex; flex-direction: column; }
+body > .container { flex: 1; }
+h1 { font-weight: 700; letter-spacing: -0.03em; }
+.navbar-brand { color: var(--bs-emphasis-color); }
+.card { border-radius: 14px; }
+.login-panel { max-width: 460px; margin-top: 5rem; }
+.reading-shell { max-width: 780px; }
+.chapter-text { white-space: pre-line; line-height: 1.9; font-size: 1.09rem; }
+.option-button { padding: 0.85rem 1.1rem; white-space: normal; }
+.empty-state { padding: 2rem; border: 1px dashed var(--bs-border-color); border-radius: 12px; color: var(--bs-secondary-color); }
+.table th { font-weight: 600; }
+.btn { border-radius: 9px; }
+.form-control { border-radius: 9px; }

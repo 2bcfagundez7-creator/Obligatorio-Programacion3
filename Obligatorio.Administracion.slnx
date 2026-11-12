@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/Datos/"><File Path="DatosIniciales.sql" /></Folder>
+  <Project Path="Obligatorio/Obligatorio.LogicaNegocio.csproj" />
+  <Project Path="Obligatorio.LogicaAccesoDatos/Obligatorio.LogicaAccesoDatos.csproj" />
+  <Project Path="Obligatorio.Web/Obligatorio.Web.csproj" />
+</Solution>

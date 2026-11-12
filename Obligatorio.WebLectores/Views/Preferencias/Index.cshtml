@@ -1,0 +1,35 @@
+@model Obligatorio.WebLectores.Models.PreferenciaDTO
+@{
+    ViewData["Title"] = "Preferencias";
+}
+<div class="reading-shell mx-auto">
+    <h1>Preferencias de lectura</h1>
+    <p class="text-body-secondary">RF12 · Elegí cómo querés ver las historias.</p>
+
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success">@TempData["Mensaje"]</div>
+    }
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+
+    <div class="card shadow-sm p-4">
+        <form method="post" asp-controller="Preferencias" asp-action="Index" asp-antiforgery="true">
+            <fieldset>
+                <legend class="h5 mb-3">Estilo visual</legend>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="radio" name="Estilo" id="claro" value="claro" checked="@(Model.Estilo == "claro")" />
+                    <label class="form-check-label" for="claro">Claro</label>
+                </div>
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="radio" name="Estilo" id="oscuro" value="oscuro" checked="@(Model.Estilo == "oscuro")" />
+                    <label class="form-check-label" for="oscuro">Oscuro</label>
+                </div>
+            </fieldset>
+            <button class="btn btn-primary" type="submit">Guardar preferencia</button>
+        </form>
+        <p class="small text-body-secondary mt-3 mb-0">La elección se guarda para tu usuario en este navegador.</p>
+    </div>
+</div>

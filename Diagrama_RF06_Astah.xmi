@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.1"
+ xmlns:xmi="http://schema.omg.org/spec/XMI/2.1"
+ xmlns:uml="http://www.eclipse.org/uml2/2.1.0/UML">
+  <uml:Model xmi:id="model_rf06" name="Diagrama RF06 - Lectura de historia">
+	<packagedElement xmi:type="uml:Package" xmi:id="pkg_negocio" name="Logica de negocio">
+	  <packagedElement xmi:type="uml:Interface" xmi:id="i_validable" name="IValidable">
+		<ownedOperation xmi:id="op_validar_i" name="Validar"/>
+	  </packagedElement>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_usuario" name="Usuario">
+		<ownedAttribute xmi:id="a_usuario_id" name="Id" type="String"/>
+		<ownedAttribute xmi:id="a_usuario_nombre" name="NombreCompleto" type="String"/>
+		<ownedAttribute xmi:id="a_usuario_email" name="Email" type="String"/>
+		<ownedAttribute xmi:id="a_usuario_username" name="Username" type="String"/>
+		<ownedAttribute xmi:id="a_usuario_password" name="Password" type="String" visibility="private"/>
+		<ownedOperation xmi:id="op_usuario_setpwd" name="SetPassword"/>
+		<ownedOperation xmi:id="op_usuario_validar" name="Validar"/>
+		<ownedOperation xmi:id="op_usuario_proteger" name="ProtegerPassword"/>
+		<ownedOperation xmi:id="op_usuario_verificar" name="VerificarPassword"/>
+		<ownedOperation xmi:id="op_usuario_validarpwd" name="ValidarPassword"/>
+	  </packagedElement>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_lector" name="Lector"/>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_administrador" name="Administrador">
+		<ownedOperation xmi:id="op_admin_estructura" name="ValidarEstructura"/>
+		<ownedOperation xmi:id="op_admin_publicar" name="PublicarHistoria"/>
+	  </packagedElement>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_historia" name="Historia">
+		<ownedAttribute xmi:id="a_historia_id" name="Id" type="String"/>
+		<ownedAttribute xmi:id="a_historia_titulo" name="Titulo" type="String"/>
+		<ownedAttribute xmi:id="a_historia_sinopsis" name="Sinopsis" type="String"/>
+		<ownedAttribute xmi:id="a_historia_estado" name="Estado" type="String"/>
+		<ownedOperation xmi:id="op_historia_validar" name="Validar"/>
+		<ownedOperation xmi:id="op_historia_estructura" name="ValidarEstructura"/>
+	  </packagedElement>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_categoria" name="Categoria">
+		<ownedAttribute xmi:id="a_categoria_id" name="Id" type="String"/>
+		<ownedAttribute xmi:id="a_categoria_nombre" name="Nombre" type="String"/>
+		<ownedOperation xmi:id="op_categoria_validar" name="Validar"/>
+	  </packagedElement>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_capitulo" name="Capitulo" isAbstract="true">
+		<ownedAttribute xmi:id="a_capitulo_id" name="Id" type="String"/>
+		<ownedAttribute xmi:id="a_capitulo_titulo" name="Titulo" type="String"/>
+		<ownedAttribute xmi:id="a_capitulo_texto" name="Texto" type="String"/>
+		<ownedOperation xmi:id="op_capitulo_validar" name="Validar"/>
+	  </packagedElement>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_capitulo_intermedio" name="CapituloIntermedio">
+		<ownedOperation xmi:id="op_intermedio_agregar" name="AgregarOpcion"/>
+		<ownedOperation xmi:id="op_intermedio_tiene" name="TieneOpciones"/>
+	  </packagedElement>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_capitulo_final" name="CapituloFinal">
+		<ownedAttribute xmi:id="a_final_vecese" name="VecesAlcanzado" type="String"/>
+		<ownedOperation xmi:id="op_final_incrementar" name="IncrementarCuenta"/>
+	  </packagedElement>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_opcion" name="Opcion">
+		<ownedAttribute xmi:id="a_opcion_id" name="Id" type="String"/>
+		<ownedAttribute xmi:id="a_opcion_texto" name="Texto" type="String"/>
+		<ownedOperation xmi:id="op_opcion_validar" name="Validar"/>
+	  </packagedElement>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_lectura" name="Lectura">
+		<ownedAttribute xmi:id="a_lectura_id" name="Id" type="String"/>
+		<ownedAttribute xmi:id="a_lectura_fecha_inicio" name="FechaInicio" type="DateTime"/>
+		<ownedAttribute xmi:id="a_lectura_fecha_fin" name="FechaFinalizacion" type="DateTime"/>
+		<ownedAttribute xmi:id="a_lectura_actual" name="CapituloActualId" type="String"/>
+		<ownedOperation xmi:id="op_lectura_validar" name="Validar"/>
+	  </packagedElement>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_auditoria" name="Auditoria">
+		<ownedAttribute xmi:id="a_auditoria_id" name="Id" type="String"/>
+		<ownedAttribute xmi:id="a_auditoria_accion" name="Accion" type="String"/>
+		<ownedAttribute xmi:id="a_auditoria_fecha" name="Fecha" type="DateTime"/>
+		<ownedOperation xmi:id="op_auditoria_validar" name="Validar"/>
+	  </packagedElement>
+	  <packagedElement xmi:type="uml:Enumeration" xmi:id="e_estado" name="EstadoHistoria">
+		<ownedLiteral xmi:id="lit_borrador" name="BORRADOR"/>
+		<ownedLiteral xmi:id="lit_publicada" name="PUBLICADA"/>
+	  </packagedElement>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_regla" name="ReglaNegocioException"/>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_recurso" name="RecursoNoEncontradoException"/>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_acceso" name="AccesoDenegadoException"/>
+	</packagedElement>
+
+	<packagedElement xmi:type="uml:Package" xmi:id="pkg_datos" name="Acceso a datos - RF06">
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_context" name="ObligatorioContext">
+		<ownedOperation xmi:id="op_context_config" name="OnConfiguring"/>
+		<ownedOperation xmi:id="op_context_model" name="OnModelCreating"/>
+	  </packagedElement>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_repo_historias" name="RepositorioHistorias">
+		<ownedOperation xmi:id="op_repo_historias_listar" name="ListarPublicadas"/>
+		<ownedOperation xmi:id="op_repo_historias_buscar" name="BuscarPorId"/>
+	  </packagedElement>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_repo_categorias" name="RepositorioCategorias">
+		<ownedOperation xmi:id="op_repo_categorias_listar" name="Listar"/>
+	  </packagedElement>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_repo_lecturas" name="RepositorioLecturas">
+		<ownedOperation xmi:id="op_repo_lecturas_agregar" name="Agregar"/>
+		<ownedOperation xmi:id="op_repo_lecturas_elegir" name="ElegirOpcion"/>
+		<ownedOperation xmi:id="op_repo_lecturas_actual" name="ObtenerCapituloActual"/>
+	  </packagedElement>
+	</packagedElement>
+
+	<packagedElement xmi:type="uml:Package" xmi:id="pkg_api" name="API - RF06">
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_api_historias" name="HistoriasApiController">
+		<ownedOperation xmi:id="op_api_historias_obtener" name="ObtenerHistorias"/>
+		<ownedOperation xmi:id="op_api_historias_categorias" name="ObtenerCategorias"/>
+	  </packagedElement>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_api_lecturas" name="LecturasApiController">
+		<ownedOperation xmi:id="op_api_lecturas_iniciar" name="IniciarLectura"/>
+		<ownedOperation xmi:id="op_api_lecturas_elegir" name="ElegirOpcion"/>
+		<ownedOperation xmi:id="op_api_lecturas_actual" name="ObtenerCapituloActual"/>
+	  </packagedElement>
+	</packagedElement>
+
+	<packagedElement xmi:type="uml:Package" xmi:id="pkg_web" name="Web de lectores - RF06">
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_servicio_api" name="ServicioApi">
+		<ownedOperation xmi:id="op_servicio_get" name="GetAsync"/>
+		<ownedOperation xmi:id="op_servicio_post" name="PostAsync"/>
+		<ownedOperation xmi:id="op_servicio_enviar" name="EnviarAsync"/>
+	  </packagedElement>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_resultado_api" name="ResultadoApi">
+		<ownedAttribute xmi:id="a_resultado_correcto" name="Correcto" type="Boolean"/>
+		<ownedAttribute xmi:id="a_resultado_datos" name="Datos" type="Object"/>
+		<ownedAttribute xmi:id="a_resultado_error" name="Error" type="String"/>
+		<ownedAttribute xmi:id="a_resultado_codigo" name="Codigo" type="String"/>
+	  </packagedElement>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_web_historias" name="HistoriasWebController">
+		<ownedOperation xmi:id="op_web_historias_index" name="Index"/>
+	  </packagedElement>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_web_lecturas" name="LecturasWebController">
+		<ownedOperation xmi:id="op_web_lecturas_iniciar" name="Iniciar"/>
+		<ownedOperation xmi:id="op_web_lecturas_leer" name="Leer"/>
+		<ownedOperation xmi:id="op_web_lecturas_elegir" name="Elegir"/>
+	  </packagedElement>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_categoria_dto" name="CategoriaDTO"/>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_historia_dto" name="HistoriaPublicadaDTO"/>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_lectura_dto" name="LecturaIniciadaDTO"/>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_opcion_dto" name="OpcionDTO"/>
+	  <packagedElement xmi:type="uml:Class" xmi:id="c_capitulo_dto" name="CapituloActualDTO"/>
+	</packagedElement>
+
+	<generalization xmi:id="g_lector_usuario" specific="c_lector" general="c_usuario"/>
+	<generalization xmi:id="g_admin_usuario" specific="c_administrador" general="c_usuario"/>
+	<generalization xmi:id="g_intermedio_capitulo" specific="c_capitulo_intermedio" general="c_capitulo"/>
+	<generalization xmi:id="g_final_capitulo" specific="c_capitulo_final" general="c_capitulo"/>
+	<interfaceRealization xmi:id="ir_usuario" implementingClassifier="c_usuario" contract="i_validable"/>
+	<interfaceRealization xmi:id="ir_historia" implementingClassifier="c_historia" contract="i_validable"/>
+	<interfaceRealization xmi:id="ir_categoria" implementingClassifier="c_categoria" contract="i_validable"/>
+	<interfaceRealization xmi:id="ir_capitulo" implementingClassifier="c_capitulo" contract="i_validable"/>
+	<interfaceRealization xmi:id="ir_opcion" implementingClassifier="c_opcion" contract="i_validable"/>
+	<interfaceRealization xmi:id="ir_lectura" implementingClassifier="c_lectura" contract="i_validable"/>
+	<interfaceRealization xmi:id="ir_auditoria" implementingClassifier="c_auditoria" contract="i_validable"/>
+
+	<packagedElement xmi:type="uml:Association" xmi:id="as_historia_categoria" name="categorias">
+	  <ownedEnd xmi:id="end_historia_categoria_h" type="c_historia" aggregation="composite"/>
+	  <ownedEnd xmi:id="end_historia_categoria_c" type="c_categoria"/>
+	</packagedElement>
+	<packagedElement xmi:type="uml:Association" xmi:id="as_historia_capitulo" name="capitulos">
+	  <ownedEnd xmi:id="end_historia_capitulo_h" type="c_historia" aggregation="composite"/>
+	  <ownedEnd xmi:id="end_historia_capitulo_c" type="c_capitulo"/>
+	</packagedElement>
+	<packagedElement xmi:type="uml:Association" xmi:id="as_intermedio_opcion" name="opciones">
+	  <ownedEnd xmi:id="end_intermedio_opcion_i" type="c_capitulo_intermedio" aggregation="composite"/>
+	  <ownedEnd xmi:id="end_intermedio_opcion_o" type="c_opcion"/>
+	</packagedElement>
+	<packagedElement xmi:type="uml:Association" xmi:id="as_opcion_destino" name="capitulo destino">
+	  <ownedEnd xmi:id="end_opcion_destino_o" type="c_opcion"/>
+	  <ownedEnd xmi:id="end_opcion_destino_c" type="c_capitulo"/>
+	</packagedElement>
+	<packagedElement xmi:type="uml:Association" xmi:id="as_lectura_usuario" name="lector">
+	  <ownedEnd xmi:id="end_lectura_usuario_l" type="c_lectura"/>
+	  <ownedEnd xmi:id="end_lectura_usuario_u" type="c_usuario"/>
+	</packagedElement>
+	<packagedElement xmi:type="uml:Association" xmi:id="as_lectura_historia" name="historia">
+	  <ownedEnd xmi:id="end_lectura_historia_l" type="c_lectura"/>
+	  <ownedEnd xmi:id="end_lectura_historia_h" type="c_historia"/>
+	</packagedElement>
+	<packagedElement xmi:type="uml:Dependency" xmi:id="dep_repo_context" client="c_repo_lecturas" supplier="c_context"/>
+	<packagedElement xmi:type="uml:Dependency" xmi:id="dep_repo_historias_context" client="c_repo_historias" supplier="c_context"/>
+	<packagedElement xmi:type="uml:Dependency" xmi:id="dep_repo_categorias_context" client="c_repo_categorias" supplier="c_context"/>
+	<packagedElement xmi:type="uml:Dependency" xmi:id="dep_api_historias_repo" client="c_api_historias" supplier="c_repo_historias"/>
+	<packagedElement xmi:type="uml:Dependency" xmi:id="dep_api_historias_categorias" client="c_api_historias" supplier="c_repo_categorias"/>
+	<packagedElement xmi:type="uml:Dependency" xmi:id="dep_api_lecturas_repo_historias" client="c_api_lecturas" supplier="c_repo_historias"/>
+	<packagedElement xmi:type="uml:Dependency" xmi:id="dep_api_lecturas_repo_lecturas" client="c_api_lecturas" supplier="c_repo_lecturas"/>
+	<packagedElement xmi:type="uml:Dependency" xmi:id="dep_web_historias_servicio" client="c_web_historias" supplier="c_servicio_api"/>
+	<packagedElement xmi:type="uml:Dependency" xmi:id="dep_web_lecturas_servicio" client="c_web_lecturas" supplier="c_servicio_api"/>
+	<packagedElement xmi:type="uml:Dependency" xmi:id="dep_servicio_resultado" client="c_servicio_api" supplier="c_resultado_api"/>
+  </uml:Model>
+</xmi:XMI>

@@ -1,0 +1,67 @@
+@{
+    string? token = Context.Session.GetString("Token");
+    string? username = Context.Session.GetString("Username");
+    string? rol = Context.Session.GetString("Rol");
+    string estilo = Context.Session.GetString("EstiloLectura") ?? "claro";
+    string tema = estilo == "oscuro" ? "dark" : "light";
+}
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="@tema">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Escoge tu aventura</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg border-bottom mb-4 bg-body">
+            <div class="container">
+                <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">Escoge tu aventura</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuLectores" aria-controls="menuLectores" aria-expanded="false" aria-label="Abrir menú">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="menuLectores">
+                    @if (token != null)
+                    {
+                        <ul class="navbar-nav me-auto">
+                            @if (rol == "Lector")
+                            {
+                                <li class="nav-item"><a class="nav-link" asp-controller="Historias" asp-action="Index">Historias</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Historial" asp-action="Index">Mis lecturas</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Preferencias" asp-action="Index">Preferencias</a></li>
+                            }
+                            @if (rol == "Administrador")
+                            {
+                                <li class="nav-item"><a class="nav-link" asp-controller="Rankings" asp-action="Index">Métricas</a></li>
+                            }
+                        </ul>
+                        <span class="navbar-text me-3">@username</span>
+                        <form method="post" asp-controller="Login" asp-action="Logout" asp-antiforgery="true">
+                            <button class="btn btn-outline-secondary btn-sm" type="submit">Cerrar sesión</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="ms-auto">
+                            <a class="btn btn-primary btn-sm" asp-controller="Login" asp-action="Login">Iniciar sesión</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container mb-5">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+    <footer class="border-top py-3 text-body-secondary">
+        <div class="container small">Obligatorio Programación 3 · Lectores</div>
+    </footer>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

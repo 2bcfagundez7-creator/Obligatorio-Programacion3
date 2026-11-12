@@ -1,0 +1,106 @@
+@model Obligatorio.WebLectores.Models.RankingsDTO
+@{
+    ViewData["Title"] = "Métricas";
+}
+<h1>Estadísticas de lectura</h1>
+<p class="text-body-secondary">RF09, RF10 y RF11 · Acceso exclusivo para administradores.</p>
+
+@if (!string.IsNullOrEmpty(Model.Error))
+{
+    <div class="alert alert-warning">@Model.Error</div>
+}
+
+<section class="mb-5">
+    <h2 class="h4">RF09 · Historias más leídas</h2>
+    <p class="small text-body-secondary">Solo aparecen las historias con lecturas completadas.</p>
+    @if (Model.Historias.Count == 0)
+    {
+        <p class="alert alert-info">Todavía no hay historias con lecturas completadas.</p>
+    }
+    else
+    {
+        <table class="table table-striped align-middle">
+            <thead><tr><th>Posición</th><th>Historia</th><th>Lecturas completadas</th></tr></thead>
+            <tbody>
+                @for (int i = 0; i < Model.Historias.Count; i++)
+                {
+                    <tr><td>@(i + 1)</td><td>@Model.Historias[i].Titulo</td><td>@Model.Historias[i].LecturasCompletadas</td></tr>
+                }
+            </tbody>
+        </table>
+    }
+</section>
+
+<section class="mb-5">
+    <h2 class="h4">RF10 · Finales de una historia</h2>
+    <form method="get" asp-controller="Rankings" asp-action="Index" class="row g-2 mb-3 align-items-end">
+        <div class="col-md-6">
+            <label for="historiaId" class="form-label">Seleccioná una historia</label>
+            <select name="historiaId" id="historiaId" class="form-select" required>
+                @foreach (var historia in Model.OpcionesHistorias)
+                {
+                    <option value="@historia.HistoriaId" selected="@(historia.HistoriaId == Model.HistoriaSeleccionadaId)">@historia.Titulo</option>
+                }
+            </select>
+        </div>
+        <div class="col-auto"><button class="btn btn-outline-primary" type="submit">Ver finales</button></div>
+    </form>
+
+    @if (Model.OpcionesHistorias.Count == 0)
+    {
+        <p class="alert alert-info">Todavía no hay historias disponibles.</p>
+    }
+    else if (Model.Finales.Count == 0)
+    {
+        <p class="alert alert-info">La historia seleccionada todavía no tiene capítulos finales.</p>
+    }
+    else
+    {
+        <table class="table table-striped align-middle">
+            <thead><tr><th>Final</th><th>Veces alcanzado</th><th>Distinción</th></tr></thead>
+            <tbody>
+                @foreach (var final in Model.Finales)
+                {
+                    <tr>
+                        <td>@final.TituloFinal</td>
+                        <td>@final.VecesAlcanzado</td>
+                        <td>
+                            @if (Model.FinalesMasFrecuentes.Contains(final.CapituloId))
+                            {
+                                <span class="badge text-bg-success">Más frecuente</span>
+                            }
+                            else
+                            {
+                                <span class="text-body-secondary">—</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @if (Model.FinalesMasFrecuentes.Count == 0)
+        {
+            <p class="text-body-secondary">Todavía no se alcanzó ningún final de esta historia.</p>
+        }
+    }
+</section>
+
+<section class="mb-4">
+    <h2 class="h4">RF11 · Usuarios con más historias distintas completadas</h2>
+    @if (Model.Lectores.Count == 0)
+    {
+        <p class="alert alert-info">Todavía no hay lectores con historias terminadas.</p>
+    }
+    else
+    {
+        <table class="table table-striped align-middle">
+            <thead><tr><th>Posición</th><th>Usuario</th><th>Historias distintas completadas</th></tr></thead>
+            <tbody>
+                @for (int i = 0; i < Model.Lectores.Count; i++)
+                {
+                    <tr><td>@(i + 1)</td><td>@Model.Lectores[i].Username</td><td>@Model.Lectores[i].HistoriasCompletadas</td></tr>
+                }
+            </tbody>
+        </table>
+    }
+</section>

@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Crear usuario";
 }
 
@@ -14,7 +14,7 @@
     <p>@ViewBag.Mensaje</p>
 }
 
-<form method="post" asp-controller="Usuario" asp-action="Crear">
+<form method="post" asp-antiforgery="true" asp-controller="Usuario" asp-action="Crear">
 
     <div>
         <label>Nombre completo</label>

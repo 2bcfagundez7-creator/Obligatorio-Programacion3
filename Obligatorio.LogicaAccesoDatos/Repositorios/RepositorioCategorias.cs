@@ -1,4 +1,5 @@
-﻿using Obligatorio.LogicaAccesoDatos.EF;
+﻿
+using Obligatorio.LogicaAccesoDatos.EF;
 using Obligatorio.LogicaNegocio.Entidades;
 
 namespace Obligatorio.LogicaAccesoDatos.Repositorios
@@ -14,15 +15,9 @@ namespace Obligatorio.LogicaAccesoDatos.Repositorios
 
         public Categoria? BuscarPorId(int id)
         {
-            foreach (Categoria categoria in _context.Categorias)
-            {
-                if (categoria.Id == id)
-                {
-                    return categoria;
-                }
-            }
-
-            return null;
+            // Buscamos la categoría por su ID utilizando LINQ to Entities
+            return _context.Categorias
+                .FirstOrDefault(c => c.Id == id);
         }
     }
 }
